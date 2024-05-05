@@ -1,18 +1,21 @@
 import com.google.gson.Gson;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.Duration;
+import java.io.*;
 import java.util.Map;
-
 
 public class Main {
     public static void main(String[] args) {
-        String filePath = "C:\\Users\\Admin\\Downloads\\tickets.json";
+        String filePath = "/tickets.json";
 
-        try (FileReader reader = new FileReader(filePath)) {
+        try (InputStream inputStream = Main.class.getResourceAsStream(filePath)) {
+            if (inputStream == null) {
+                System.out.println("Файл " + filePath + " не найден внутри JAR-файла.");
+                return;
+            }
+
+            InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
+
             Gson gson = new Gson();
-
             FlightData flightData = gson.fromJson(reader, FlightData.class);
 
             Map<String, String> minTimeBetweenCities = flightData.getMinTimeBetweenCities();
